@@ -1,4 +1,4 @@
-﻿#include "onedimensionalSearchMethods.h"
+﻿#include "oneDimensionalSearch.h"
 
 #include <math.h>
 
@@ -60,6 +60,9 @@ MethodResult dichotomyMethod(double (*func)(double), double a, double b, double 
 		++iter;
 	}
 
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
+			eps, (a + b) / 2, iter, dichotomyCalculationNum(iter));
+
 	closeFile(fp);
 
 	return (MethodResult){(a + b) / 2, iter, dichotomyCalculationNum(iter)};
@@ -107,6 +110,9 @@ MethodResult goldenRatioMethod(double (*func)(double), double a, double b, doubl
 
 		++iter;
 	}
+
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
+			eps, (a + b) / 2, iter, goldenRatioCalculationNum(iter));
 
 	closeFile(fp);
 
@@ -163,6 +169,9 @@ MethodResult fibonacciMethod(double (*func)(double), double a, double b, double 
 		prev_b = b;
 	}
 
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
+			eps, (a + b) / 2, iter, fibonacciCalculationNum(iter));
+
 	closeFile(fp);
 
 	return (MethodResult){(a + b) / 2, iter - 1, fibonacciCalculationNum(iter)};
@@ -186,12 +195,11 @@ IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, 
 	uint32_t iter = 0;
 	do {
 		prev_x = x0;
-		fx0 = fx1;
 		x0 = x1;
+		fx0 = fx1;
 
 		h *= 2;
 		x1 = prev_x + h;
-
 		fx1 = func(x1);
 
 		fprintf(fp, "%u\t%.14lf\t%.14lf\t[%.14lf, %.14lf]\n", iter, x1, fx1, x0, x1);

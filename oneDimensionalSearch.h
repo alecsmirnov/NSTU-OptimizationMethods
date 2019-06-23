@@ -1,5 +1,5 @@
-﻿#ifndef ONEDIMENSIONALSEARCHMETHODS_H
-#define ONEDIMENSIONALSEARCHMETHODS_H
+﻿#ifndef ONEDIMENSIONALSEARCH_H
+#define ONEDIMENSIONALSEARCH_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +20,6 @@ typedef struct IntervalResult {
 MethodResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename);
 MethodResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename);
 MethodResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename);
-
 IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, const char* filename);
 
 #endif
