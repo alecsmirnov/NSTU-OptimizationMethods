@@ -28,7 +28,7 @@ static double binet(uint32_t n) {
 	return round((pow(phi, n) - pow(1 - phi, n)) / sqrt(5));
 }
 
-ODResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODMResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -61,10 +61,10 @@ ODResult dichotomyMethod(double (*func)(double), double a, double b, double eps,
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter, iter * 2};
+	return (ODMResult){(a + b) / 2, iter, iter * 2};
 }
 
-ODResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -112,10 +112,10 @@ ODResult goldenRatioMethod(double (*func)(double), double a, double b, double ep
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter, iter + 1};
+	return (ODMResult){(a + b) / 2, iter, iter + 1};
 }
 
-ODResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODMResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -170,7 +170,7 @@ ODResult fibonacciMethod(double (*func)(double), double a, double b, double eps,
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter - 1, iter + 1};
+	return (ODMResult){(a + b) / 2, iter - 1, iter + 1};
 }
 
 IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, const char* filename) {
