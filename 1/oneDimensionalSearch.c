@@ -2,10 +2,6 @@
 
 #include <math.h>
 
-#define dichotomyCalculationNum(iter) ((iter) * 2)
-#define goldenRatioCalculationNum(iter) ((iter) + 1)
-#define fibonacciCalculationNum(iter) ((iter) + 1)
-
 static FILE* openFile(const char* filename) {
 	FILE* fp = fopen(filename, "w");
 
@@ -32,7 +28,7 @@ static double binet(uint32_t n) {
 	return round((pow(phi, n) - pow(1 - phi, n)) / sqrt(5));
 }
 
-MethodResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -65,10 +61,10 @@ MethodResult dichotomyMethod(double (*func)(double), double a, double b, double 
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter, dichotomyCalculationNum(iter)};
+	return (MethodResult){(a + b) / 2, iter, iter * 2};
 }
 
-MethodResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -116,10 +112,10 @@ MethodResult goldenRatioMethod(double (*func)(double), double a, double b, doubl
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter, goldenRatioCalculationNum(iter)};
+	return (MethodResult){(a + b) / 2, iter, iter + 1};
 }
 
-MethodResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
+ODResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
 	FILE* fp = openFile(filename);
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
@@ -174,7 +170,7 @@ MethodResult fibonacciMethod(double (*func)(double), double a, double b, double 
 
 	closeFile(fp);
 
-	return (MethodResult){(a + b) / 2, iter - 1, fibonacciCalculationNum(iter)};
+	return (MethodResult){(a + b) / 2, iter - 1, iter + 1};
 }
 
 IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, const char* filename) {
