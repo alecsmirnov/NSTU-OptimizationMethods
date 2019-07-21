@@ -4,8 +4,7 @@
 #include <stdint.h>
 
 #define APPROACH_SIZE 2
-
-#define PRECISION "7"
+#define PRINT_ACCURACY "7"
 
 typedef struct DMResult {
 	double x[APPROACH_SIZE];
