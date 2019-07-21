@@ -12,7 +12,7 @@ static void createLogTable(double a, double b, double x0, double eps0, double ep
 	fprintf(fp, "ln(eps)\tdich\tgoldRat\tfib\n");
 
 	for (double eps = eps0; eps > eps1; eps *= eps_step) {
-		MethodResult dich, gold, fib;
+		ODMResult dich, gold, fib;
 		char filename[FILENAME_MAX];
 
 		sprintf(filename, "Results/dichotomy_%e.txt", eps);
