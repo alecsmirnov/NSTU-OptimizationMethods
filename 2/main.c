@@ -34,8 +34,8 @@ static writeGeneralTableIter(FILE* fp, double eps, uint8_t iters, uint8_t calcs,
 	fprintf(fp, "%."PRINT_ACCURACY"lf\t", eps);
 	fprintf(fp, "%u\t", iters);
 	fprintf(fp, "%u\t", calcs);
-	fprintf(fp, "%."PRINT_ACCURACY"lf\t%."PRINT_ACCURACY"lf\t", x0[0], x0[1]);
-	fprintf(fp, "%."PRINT_ACCURACY"lf\t%."PRINT_ACCURACY"lf\t", x[0], x[1]);
+	fprintf(fp, "%."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf\t", x0[0], x0[1]);
+	fprintf(fp, "%."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf\t", x[0], x[1]);
 	fprintf(fp, "%."PRINT_ACCURACY"lf\n", func_min);
 }
 
