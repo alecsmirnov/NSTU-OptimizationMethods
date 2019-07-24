@@ -1,44 +1,14 @@
 ﻿#include "directSearch.h"
+
+#include "goldenRatioMethod.h"
+#include "gradient.h"
+#include "concatStr.h"
 #include "plotter.h"
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
 #define ROSENBROCK "Results/Rosenbrock/"
 #define BROYDEN	   "Results/Broyden/"
-
-#define arrayCopy(dest, src) dest[0] = src[0]; dest[1] = src[1]
-#define arrayNorm(x) sqrt(x[0] * x[0] + x[1] * x[1])
-
-typedef struct IntervalResult {
-	double a;
-	double b;
-
-	uint32_t calcs_count;
-} IntervalResult;
-
-typedef struct GoldenRatioResult {
-	double func_min;
-
-	uint32_t calcs_count;
-} GoldenRatioResult;
-
-typedef struct GradResult {
-	double x0[APPROACH_SIZE];
-
-	uint32_t calcs_count;
-} GradResult;
-
-static char* concatStr(const char* s1, const char* s2) {
-	char* result = (char*)malloc(sizeof(char) * (strlen(s1) + strlen(s2) + 1));
-
-	strcpy(result, s1);
-	strcat(result, s2);
-
-	return result;
-}
 
 static void writeTableIter(FILE* fp, uint32_t iter, const double prev_x[APPROACH_SIZE], 
 						   const double x[APPROACH_SIZE], double fx_prev, double fx, double lambda) {
@@ -63,71 +33,6 @@ static void writeBroydenTableIter(FILE* fp, uint32_t iter, const double prev_x[A
 	fprintf(fp, "%."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf\n", A[0][0], A[0][1], A[1][0], A[1][1]);
 }
 
-static IntervalResult findIntervalMin(double (*func)(double, double), const double x[APPROACH_SIZE], const double S[APPROACH_SIZE], double lambda0) {
-	double fx0 = func(x[0] + lambda0 * S[0], x[1] + lambda0 * S[1]);
-
-	double delta = 1E-8;
-	if (fx0 < func(x[0] + (lambda0 + delta) * S[0], x[1] + (lambda0 + delta) * S[1]))
-		delta = -delta;
-
-	double lambda1 = lambda0 + delta;
-	double fx1 = func(x[0] + lambda1 * S[0], x[1] + lambda1 * S[1]);
-
-	uint32_t calcs = 3;
-	do {
-		delta *= 2;
-
-		lambda0 = lambda1;
-		lambda1 += delta;
-
-		fx0 = fx1;
-		fx1 = func(x[0] + lambda1 * S[0], x[1] + lambda1 * S[1]);
-
-		++calcs;
-	} while (fx1 < fx0);
-
-	return lambda1 < lambda0 ? (IntervalResult){lambda1, lambda0, calcs} : (IntervalResult){lambda0, lambda1, calcs};
-}
-
-static GoldenRatioResult goldenRatioMethod(double (*func)(double, double), const double x[APPROACH_SIZE], const double S[APPROACH_SIZE], double lambda0, double eps) {
-	IntervalResult interval = findIntervalMin(func, x, S, lambda0);
-
-	const double ratio_a = (3 - sqrt(5)) / 2;
-	const double ratio_b = (sqrt(5) - 3) / 2;
-
-	double lambda1 = interval.a + ratio_a * (interval.b - interval.a);
-	double lambda2 = interval.b + ratio_b * (interval.b - interval.a);
-
-	double fx1 = func(x[0] + lambda1 * S[0], x[1] + lambda1 * S[1]);
-	double fx2 = func(x[0] + lambda2 * S[0], x[1] + lambda2 * S[1]);
-
-	uint32_t calcs = interval.calcs_count + 2;
-	while (eps < fabs(interval.b - interval.a)) {
-		if (fx1 < fx2) {
-			interval.b = lambda2;
-
-			lambda2 = lambda1;
-			fx2 = fx1;
-
-			lambda1 = interval.a + ratio_a * (interval.b - interval.a);
-			fx1 = func(x[0] + lambda1 * S[0], x[1] + lambda1 * S[1]);
-		}
-		else {
-			interval.a = lambda1;
-
-			lambda1 = lambda2;
-			fx1 = fx2;
-
-			lambda2 = interval.b + ratio_b * (interval.b - interval.a);
-			fx2 = func(x[0] + lambda2 * S[0], x[1] + lambda2 * S[1]);
-		}
-
-		++calcs;
-	}
-
-	return (GoldenRatioResult){(interval.a + interval.b) / 2, calcs};
-}
-
 DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROACH_SIZE], double eps, const char* filename) {
 	char* filename_table = concatStr(ROSENBROCK, filename);
 	FILE* fp = fopen(filename_table, "w");
@@ -135,7 +40,7 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 	addStep(x0[0], x0[1]);
 
 	double x[APPROACH_SIZE];
-	arrayCopy(x, x0);
+	memcpy(x, x0, sizeof(double) * APPROACH_SIZE);
 
 	double S[APPROACH_SIZE][APPROACH_SIZE] = {{1, 0}, {0, 1}};
 
@@ -145,11 +50,11 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 	double fx_prev;
 	double fx;
 	do {
-		arrayCopy(prev_x, x);
+		memcpy(prev_x, x, sizeof(double) * APPROACH_SIZE);
 
 		double lambda[APPROACH_SIZE] = {0};
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i) {
-			GoldenRatioResult gold_ratio = goldenRatioMethod(func, x, S[i], lambda[i], eps);
+			GRMResult gold_ratio = goldenRatioMethod(func, x, S[i], lambda[i], eps);
 			lambda[i] = gold_ratio.func_min;
 			calcs += gold_ratio.calcs_count;
 
@@ -198,21 +103,6 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 	return (DMResult){x[0], x[1], fx, iters, calcs};
 }
 
-static GradResult grad(double(*func)(double, double), const double x1[APPROACH_SIZE], double eps) {
-	const double fx1 = func(x1[0], x1[1]);
-
-	double x0[APPROACH_SIZE];
-	double x[APPROACH_SIZE];
-	arrayCopy(x, x1);
-	for (uint8_t i = 0; i != APPROACH_SIZE; ++i) {
-		x[i] += eps;
-		x0[i] = (func(x[0], x[1]) - fx1) / eps;
-		x[i] -= eps;
-	}
-
-	return (GradResult){x0[0], x0[1], APPROACH_SIZE};
-}
-
 DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_SIZE], double eps, const char* filename) {
 	char* filename_table = concatStr(BROYDEN, filename);
 	FILE* fp_table = fopen(filename_table, "w");
@@ -220,7 +110,7 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 	addStep(x0[0], x0[1]);
 
 	double x[APPROACH_SIZE];
-	arrayCopy(x, x0);
+	memcpy(x, x0, sizeof(double) * APPROACH_SIZE);
 
 	double eta[APPROACH_SIZE][APPROACH_SIZE] = {{1, 0}, {0, 1}};
 
@@ -237,14 +127,14 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 			for (uint8_t j = 0; j != APPROACH_SIZE; ++j)
 				eta_grad[i] += eta[i][j] * grad_result.x0[j];
 
-		GoldenRatioResult lambda = goldenRatioMethod(func, x, eta_grad, 0, eps);
+		GRMResult lambda = goldenRatioMethod(func, x, eta_grad, 0, eps);
 		calcs += lambda.calcs_count;
 
 		double dx[APPROACH_SIZE];
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i)
 			dx[i] = lambda.func_min * eta_grad[i];
 
-		arrayCopy(prev_x, x);
+		memcpy(prev_x, x, sizeof(double) * APPROACH_SIZE);
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i)
 			x[i] += dx[i];
 
@@ -257,7 +147,7 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 			dgrad[i] = grad_result.x0[i] - temp_grad.x0[i];
 
 		double temp[APPROACH_SIZE];
-		arrayCopy(temp, dx);
+		memcpy(temp, dx, sizeof(double) * APPROACH_SIZE);
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i)
 			for (uint8_t j = 0; j != APPROACH_SIZE; ++j)
 				temp[i] -= eta[i][j] * dgrad[j];

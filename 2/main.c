@@ -1,9 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 #include "directSearch.h"
-#include "plotter.h"
 
 static double f1(double x, double y) {
 	double A1 = 1; 
@@ -17,8 +15,8 @@ static double f1(double x, double y) {
 	double d1 = 3;
 	double d2 = 1;
 
-	return  -(A1 / (1 + pow((x - a1) / b1, 2) + pow((y - c1) / d1, 2)) + 
-			  A2 / (1 + pow((x - a2) / b2, 2) + pow((y - c2) / d2, 2)));
+	return -(A1 / (1 + pow((x - a1) / b1, 2) + pow((y - c1) / d1, 2)) + 
+			 A2 / (1 + pow((x - a2) / b2, 2) + pow((y - c2) / d2, 2)));
 }
 
 static double f2(double x, double y) {
