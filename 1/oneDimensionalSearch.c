@@ -1,35 +1,10 @@
 ﻿#include "oneDimensionalSearch.h"
 
-#include <math.h>
-
-static FILE* openFile(const char* filename) {
-	FILE* fp = fopen(filename, "w");
-
-	if (fp == NULL) {
-		fprintf(stderr, "Error: can't open file %s!\n", filename);
-		exit(EXIT_FAILURE);
-	}
-
-	return fp;
-}
-
-static void closeFile(FILE* fp) {
-	int close_status = fclose(fp);
-
-	if (close_status == EOF) {
-		fprintf(stderr, "Error: can't close file!\n");
-		exit(EXIT_FAILURE);
-	}
-}
-
-static double binet(uint32_t n) {
-	const double phi = (1 + sqrt(5)) * 0.5;
-
-	return round((pow(phi, n) - pow(1 - phi, n)) / sqrt(5));
-}
+#include <stdio.h>
+#include <stdlib.h>
 
 ODMResult dichotomyMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
-	FILE* fp = openFile(filename);
+	FILE* fp = fopen(filename, "w");
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
 	const double delta = eps / 2;
@@ -59,13 +34,13 @@ ODMResult dichotomyMethod(double (*func)(double), double a, double b, double eps
 	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
 			eps, (a + b) / 2, iter, dichotomyCalculationNum(iter));
 
-	closeFile(fp);
+	fclose(fp);
 
 	return (ODMResult){(a + b) / 2, iter, iter * 2};
 }
 
 ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
-	FILE* fp = openFile(filename);
+	FILE* fp = fopen(filename, "w");
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
 	const double ratio_a = (3 - sqrt(5)) / 2;
@@ -110,13 +85,13 @@ ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double e
 	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
 			eps, (a + b) / 2, iter, goldenRatioCalculationNum(iter));
 
-	closeFile(fp);
+	fclose(fp);
 
 	return (ODMResult){(a + b) / 2, iter, iter + 1};
 }
 
 ODMResult fibonacciMethod(double (*func)(double), double a, double b, double eps, const char* filename) {
-	FILE* fp = openFile(filename);
+	FILE* fp = fopen(filename, "w");
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
 	uint32_t n = 0;	
@@ -168,13 +143,13 @@ ODMResult fibonacciMethod(double (*func)(double), double a, double b, double eps
 	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
 			eps, (a + b) / 2, iter, fibonacciCalculationNum(iter));
 
-	closeFile(fp);
+	fclose(fp);
 
 	return (ODMResult){(a + b) / 2, iter - 1, iter + 1};
 }
 
 IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, const char* filename) {
-	FILE* fp = openFile(filename);
+	FILE* fp = fopen(filename, "w");
 	fprintf(fp, "i\txi\tf(xi)\tinterval\n");
 
 	double fx0 = func(x0);
@@ -203,7 +178,7 @@ IntervalResult findIntervalMin(double (*func)(double), double x0, double delta, 
 		++iter;
 	} while (fx1 < fx0);
 
-	closeFile(fp);
+	fclose(fp);
 
 	return 0 < delta ? (IntervalResult){prev_x, x1} : (IntervalResult){x1, prev_x};
 }
