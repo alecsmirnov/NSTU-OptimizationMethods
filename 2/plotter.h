@@ -3,9 +3,9 @@
 
 #define TEMP_FILES "plotter_temp/"
 
-void addStep(double x, double y);
-void clearSteps();
-void makePicture(double (*func)(double, double), const char* funcname, const char* result_path);
-void clearData();
+void plotterAddStep(double x, double y);
+void plotterClearSteps();
+void plotterMakePicture(double (*func)(double, double), const char* funcname, const char* result_path);
+void plotterClearData();
 
 #endif

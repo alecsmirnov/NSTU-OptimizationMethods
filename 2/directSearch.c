@@ -37,7 +37,7 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 	char* filename_table = concatStr(ROSENBROCK, filename);
 	FILE* fp = fopen(filename_table, "w");
 
-	addStep(x0[0], x0[1]);
+	plotterAddStep(x0[0], x0[1]);
 
 	double x[APPROACH_SIZE];
 	memcpy(x, x0, sizeof(double) * APPROACH_SIZE);
@@ -88,7 +88,7 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 		calcs += 2;
 
 		writeRosenbrockTableIter(fp, iters, prev_x, x, fx_prev, fx,  S, lambda[0]);
-		addStep(x[0], x[1]);
+		plotterAddStep(x[0], x[1]);
 		
 		++iters;
 	} while (eps < fabs(fx_prev - fx) && 
@@ -97,8 +97,8 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 	fclose(fp);
 	free(filename_table);
 	
-	makePicture(func, filename, ROSENBROCK);
-	clearData();
+	plotterMakePicture(func, filename, ROSENBROCK);
+	plotterClearData();
 
 	return (DMResult){x[0], x[1], fx, iters, calcs};
 }
@@ -107,7 +107,7 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 	char* filename_table = concatStr(BROYDEN, filename);
 	FILE* fp_table = fopen(filename_table, "w");
 
-	addStep(x0[0], x0[1]);
+	plotterAddStep(x0[0], x0[1]);
 
 	double x[APPROACH_SIZE];
 	memcpy(x, x0, sizeof(double) * APPROACH_SIZE);
@@ -166,7 +166,7 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 		calcs += 2;
 
 		writeBroydenTableIter(fp_table, iters, prev_x, x, fx_prev, fx, eta, grad_result.x0, lambda.func_min);
-		addStep(x[0], x[1]);
+		plotterAddStep(x[0], x[1]);
 
 		++iters;
 	} while (eps < fabs(arrayNorm(prev_x) - arrayNorm(x)) && 
@@ -175,8 +175,8 @@ DMResult broydenMethod(double (*func)(double, double), const double x0[APPROACH_
 	fclose(fp_table);
 	free(filename_table);
 
-	makePicture(func, filename, BROYDEN);
-	clearData();
+	plotterMakePicture(func, filename, BROYDEN);
+	plotterClearData();
 
 	return (DMResult){x[0], x[1], func(x[0], x[1]), iters, calcs};
 }

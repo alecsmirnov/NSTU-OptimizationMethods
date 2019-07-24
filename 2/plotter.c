@@ -104,7 +104,7 @@ static PlotSize findPlotSize() {
 	return plot_size;
 }
 
-void addStep(double x, double y) {
+void plotterAddStep(double x, double y) {
 	FILE* fp = fopen(TEMP_FILES STEPS_FILE, "a");
 
 	fprintf(fp, "%lf\t%lf\n", x, y);
@@ -112,7 +112,7 @@ void addStep(double x, double y) {
 	fclose(fp);
 }
 
-void clearSteps() {
+void plotterClearSteps() {
 	fclose(fopen(TEMP_FILES STEPS_FILE, "w"));
 }
 
@@ -162,7 +162,7 @@ static void makeGrid(double (*func)(double, double)) {
 	}
 }
 
-void makePicture(double (*func)(double, double), const char* funcname, const char* result_path) {
+void plotterMakePicture(double (*func)(double, double), const char* funcname, const char* result_path) {
 	makeGrid(func);
 
 	char* python_str = (char*)malloc(sizeof(char) *
@@ -174,7 +174,7 @@ void makePicture(double (*func)(double, double), const char* funcname, const cha
 	free(python_str);
 }
 
-void clearData() {
+void plotterClearData() {
 	clearSteps();
 
 	fclose(fopen(TEMP_FILES GRID_FILE "_x.txt", "w"));
