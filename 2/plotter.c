@@ -75,7 +75,7 @@ static MeshgridResult meshgrid(double* x, double* y, size_t x_size, size_t y_siz
 }
 
 static PlotSize findPlotSize() {
-	FILE* fp = fopen(TEMP_FILES STEPS_FILE, "r");
+	FILE* fp = fopen(PLOTTER_TEMP_DIR STEPS_FILE, "r");
 
 	PlotSize plot_size = (PlotSize){DBL_MIN, DBL_MAX, DBL_MIN, DBL_MAX};
 
@@ -104,18 +104,6 @@ static PlotSize findPlotSize() {
 	return plot_size;
 }
 
-void plotterAddStep(double x, double y) {
-	FILE* fp = fopen(TEMP_FILES STEPS_FILE, "a");
-
-	fprintf(fp, "%lf\t%lf\n", x, y);
-
-	fclose(fp);
-}
-
-void plotterClearSteps() {
-	fclose(fopen(TEMP_FILES STEPS_FILE, "w"));
-}
-
 static void makeGrid(double (*func)(double, double)) {
 	PlotSize plot_size = findPlotSize();
 
@@ -137,7 +125,7 @@ static void makeGrid(double (*func)(double, double)) {
 
 	for (uint8_t i = 0; i != COORDS_COUNT; ++i) {
 		char grid_filename[FILENAME_MAX];
-		sprintf(grid_filename, TEMP_FILES GRID_FILE "_%c.txt", coords_alias[i]);
+		sprintf(grid_filename, PLOTTER_TEMP_DIR GRID_FILE "_%c.txt", coords_alias[i]);
 
 		FILE* fp = fopen(grid_filename, "w");
 
@@ -162,12 +150,24 @@ static void makeGrid(double (*func)(double, double)) {
 	}
 }
 
+void plotterAddStep(double x, double y) {
+	FILE* fp = fopen(PLOTTER_TEMP_DIR STEPS_FILE, "a");
+
+	fprintf(fp, "%lf\t%lf\n", x, y);
+
+	fclose(fp);
+}
+
+void plotterClearSteps() {
+	fclose(fopen(PLOTTER_TEMP_DIR STEPS_FILE, "w"));
+}
+
 void plotterMakePicture(double (*func)(double, double), const char* funcname, const char* result_path) {
 	makeGrid(func);
 
 	char* python_str = (char*)malloc(sizeof(char) *
-					   (strlen("python plotter.py ") + strlen(TEMP_FILES) + strlen(funcname) + strlen(result_path) + 4));
-	sprintf(python_str, "python plotter.py %s %s %s\0", TEMP_FILES, funcname, result_path);
+					   (strlen("python plotter.py ") + strlen(PLOTTER_TEMP_DIR) + strlen(funcname) + strlen(result_path) + 4));
+	sprintf(python_str, "python plotter.py %s %s %s\0", PLOTTER_TEMP_DIR, funcname, result_path);
 
 	system(python_str);
 
@@ -175,9 +175,9 @@ void plotterMakePicture(double (*func)(double, double), const char* funcname, co
 }
 
 void plotterClearData() {
-	clearSteps();
+	plotterClearSteps();
 
-	fclose(fopen(TEMP_FILES GRID_FILE "_x.txt", "w"));
-	fclose(fopen(TEMP_FILES GRID_FILE "_y.txt", "w"));
-	fclose(fopen(TEMP_FILES GRID_FILE "_z.txt", "w"));
+	fclose(fopen(PLOTTER_TEMP_DIR GRID_FILE "_x.txt", "w"));
+	fclose(fopen(PLOTTER_TEMP_DIR GRID_FILE "_y.txt", "w"));
+	fclose(fopen(PLOTTER_TEMP_DIR GRID_FILE "_z.txt", "w"));
 }

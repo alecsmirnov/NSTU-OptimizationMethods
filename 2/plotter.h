@@ -1,7 +1,7 @@
 ﻿#ifndef PLOTTER_H
 #define PLOTTER_H
 
-#define TEMP_FILES "plotter_temp/"
+#define PLOTTER_TEMP_DIR "plotter_temp/"
 
 void plotterAddStep(double x, double y);
 void plotterClearSteps();
