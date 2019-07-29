@@ -11,6 +11,7 @@ typedef struct GRMResult {
 	uint32_t calcs_count;
 } GRMResult;
 
-GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_APPROACH_SIZE], const double S[GR_APPROACH_SIZE], double lambda0, double eps);
+GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_APPROACH_SIZE], 
+							const double S[GR_APPROACH_SIZE], double lambda0, double eps);
 
 #endif
