@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import sys
 import re
 
-TEMP_FILES = 'plotter_temp/'
+TEMP_DIR = 'plotter_temp/'
 
 ARRAY_FIRST =  0
 ARRAY_LAST  = -1
@@ -20,7 +20,7 @@ LEVELS_COUNT = 26
 def getCoordSteps():
 	x_steps = []
 	y_steps = []
-	with open(TEMP_FILES + 'steps.txt') as file:
+	with open(TEMP_DIR + 'steps.txt') as file:
  		for line in file:
  			x, y = line.split()
  			x_steps.append(float(x))
@@ -28,9 +28,9 @@ def getCoordSteps():
 	return x_steps, y_steps
 
 def getGrids():
-	xg = list(map(str.split, open(TEMP_FILES + 'grid_x.txt')))
-	yg = list(map(str.split, open(TEMP_FILES + 'grid_y.txt')))
-	zg = list(map(str.split, open(TEMP_FILES + 'grid_z.txt')))
+	xg = list(map(str.split, open(TEMP_DIR + 'grid_x.txt')))
+	yg = list(map(str.split, open(TEMP_DIR + 'grid_y.txt')))
+	zg = list(map(str.split, open(TEMP_DIR + 'grid_z.txt')))
 	return xg, yg, zg
 
 def setPlotSettings():
@@ -52,7 +52,7 @@ def makePicture(funcname, result_path):
 	plt.savefig(result_path + funcname + ".png")
 
 if __name__ == "__main__":	
-	TEMP_FILES = sys.argv[1]
+	TEMP_DIR = sys.argv[1]
 	funcname = re.sub('\.txt$', '', sys.argv[2])
 	result_path = sys.argv[3]
 	makePicture(funcname, result_path)
