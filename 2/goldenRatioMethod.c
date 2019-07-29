@@ -8,10 +8,10 @@ GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_AP
 	MISResult interval = minIntervalSearch(func, x, S, lambda0);
 
 	const double ratio_a = (3 - sqrt(5)) / 2;
-	const double ratio_b = (sqrt(5) - 3) / 2;
+	const double ratio_b = (sqrt(5) - 1) / 2;
 
 	double lambda1 = interval.a + ratio_a * (interval.b - interval.a);
-	double lambda2 = interval.b + ratio_b * (interval.b - interval.a);
+	double lambda2 = interval.a + ratio_b * (interval.b - interval.a);
 
 	double fx1 = func(x[0] + lambda1 * S[0], x[1] + lambda1 * S[1]);
 	double fx2 = func(x[0] + lambda2 * S[0], x[1] + lambda2 * S[1]);
@@ -33,7 +33,7 @@ GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_AP
 			lambda1 = lambda2;
 			fx1 = fx2;
 
-			lambda2 = interval.b + ratio_b * (interval.b - interval.a);
+			lambda2 = interval.a + ratio_b * (interval.b - interval.a);
 			fx2 = func(x[0] + lambda2 * S[0], x[1] + lambda2 * S[1]);
 		}
 

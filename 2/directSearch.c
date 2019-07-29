@@ -77,11 +77,12 @@ DMResult rosenbrockMethod(double (*func)(double, double), const double x0[APPROA
 			S[0][i] = A[0][i] / arrayNorm(A[0]);
 
 		double K = A[1][0] * S[0][0] + A[1][1] * S[0][1];
+		double B[APPROACH_SIZE];
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i)
-			S[1][i] = A[1][i] - K * S[0][i];
+			B[i] = A[1][i] - K * S[0][i];
 
 		for (uint8_t i = 0; i != APPROACH_SIZE; ++i)
-			S[1][i] = S[1][i] / arrayNorm(S[1]);
+			S[1][i] = B[i] / arrayNorm(B);
 
 		fx_prev = func(prev_x[0], prev_x[1]);
 		fx = func(x[0], x[1]);
