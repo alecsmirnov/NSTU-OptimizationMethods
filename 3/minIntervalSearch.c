@@ -1,6 +1,7 @@
 ﻿#include "minIntervalSearch.h"
 
-MISResult minIntervalSearch(double (*func)(double, double), const double x[MI_APPROACH_SIZE], const double S[MI_APPROACH_SIZE], double lambda0, double delta) {
+MISResult minIntervalSearch(double (*func)(double, double), const double x[MI_APPROACH_SIZE], 
+							const double S[MI_APPROACH_SIZE], double lambda0, double delta) {
 	double fx0 = func(x[0] + lambda0 * S[0], x[1] + lambda0 * S[1]);
 
 	if (fx0 < func(x[0] + (lambda0 + delta) * S[0], x[1] + (lambda0 + delta) * S[1]))

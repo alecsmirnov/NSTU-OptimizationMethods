@@ -4,7 +4,8 @@
 
 #include <math.h>
 
-GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_APPROACH_SIZE], const double S[GR_APPROACH_SIZE], double lambda0, double eps) {
+GRMResult goldenRatioMethod(double (*func)(double, double), const double x[GR_APPROACH_SIZE], 
+							const double S[GR_APPROACH_SIZE], double lambda0, double eps) {
 	MISResult interval = minIntervalSearch(func, x, S, lambda0, eps);
 
 	const double ratio_a = (3 - sqrt(5)) / 2;
