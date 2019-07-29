@@ -12,6 +12,7 @@ typedef struct MISResult {
 	uint32_t calcs_count;
 } MISResult;
 
-MISResult minIntervalSearch(double (*func)(double, double), const double x[MI_APPROACH_SIZE], const double S[MI_APPROACH_SIZE], double lambda0, double delta);
+MISResult minIntervalSearch(double (*func)(double, double), const double x[MI_APPROACH_SIZE], 
+							const double S[MI_APPROACH_SIZE], double lambda0, double delta);
 
 #endif

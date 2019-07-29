@@ -39,10 +39,10 @@ inline void writeTableHeader(FILE* fp, int val) {
 	fprintf(fp, "\n");
 }
 
-inline void writeTableIter(FILE* fp, uint64_t iters, uint64_t calcs, const double x0[],
+inline void writeTableIter(FILE* fp, uint32_t iters, uint32_t calcs, const double x0[],
 						   const double x[], double func_min, double r, double r_step, double eps, uint8_t alpha, int val) {
-	if (bitCheck(val, 0)) fprintf(fp, "%llu\t", iters);
-	if (bitCheck(val, 1)) fprintf(fp, "%llu\t", calcs);
+	if (bitCheck(val, 0)) fprintf(fp, "%u\t", iters);
+	if (bitCheck(val, 1)) fprintf(fp, "%u\t", calcs);
 	if (bitCheck(val, 2)) fprintf(fp, "%." PRINT_ACCURACY "lf %." PRINT_ACCURACY "lf\t", x0[0], x0[1]);
 	if (bitCheck(val, 3)) fprintf(fp, "%." PRINT_ACCURACY "lf %." PRINT_ACCURACY "lf\t", x[0], x[1]);
 	if (bitCheck(val, 4)) fprintf(fp, "%." PRINT_ACCURACY "e\t", func_min);
