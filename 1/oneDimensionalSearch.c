@@ -31,8 +31,7 @@ ODMResult dichotomyMethod(double (*func)(double), double a, double b, double eps
 		++iter;
 	}
 
-	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
-			eps, (a + b) / 2, iter, dichotomyCalculationNum(iter));
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n", eps, (a + b) / 2, iter, iter * 2);
 
 	fclose(fp);
 
@@ -44,10 +43,10 @@ ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double e
 	fprintf(fp, "i\ta\tb\t(b - a)\t(prev_b - prev_a)/(b - a)\tx1\tx2\tf(x1)\tf(x2)\n");
 
 	const double ratio_a = (3 - sqrt(5)) / 2;
-	const double ratio_b = (sqrt(5) - 3) / 2;
+	const double ratio_b = (sqrt(5) - 1) / 2;
 
 	double x1 = a + ratio_a * (b - a);
-	double x2 = b + ratio_b * (b - a);
+	double x2 = a + ratio_b * (b - a);
 
 	double fx1 = func(x1);
 	double fx2 = func(x2);
@@ -72,7 +71,7 @@ ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double e
 			x1 = x2;
 			fx1 = fx2;
 
-			x2 = b + ratio_b * (b - a);
+			x2 = a + ratio_b * (b - a);
 			fx2 = func(x2);
 		}
 
@@ -82,8 +81,7 @@ ODMResult goldenRatioMethod(double (*func)(double), double a, double b, double e
 		++iter;
 	}
 
-	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
-			eps, (a + b) / 2, iter, goldenRatioCalculationNum(iter));
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n", eps, (a + b) / 2, iter, iter + 1);
 
 	fclose(fp);
 
@@ -140,8 +138,7 @@ ODMResult fibonacciMethod(double (*func)(double), double a, double b, double eps
 		prev_b = b;
 	}
 
-	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n",
-			eps, (a + b) / 2, iter, fibonacciCalculationNum(iter));
+	fprintf(fp, "\neps:\t%.14lf\nxmin:\t%.14lf\ni:\t\t%u\nn:\t\t%u\n", eps, (a + b) / 2, iter, iter + 1);
 
 	fclose(fp);
 
