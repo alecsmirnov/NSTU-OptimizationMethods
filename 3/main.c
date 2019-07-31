@@ -33,17 +33,17 @@ static double G2(double x, double y) {
 	return pow(fabs(x + y - 1), minimization.alpha);	// b) x = 1 - y
 }
 
-// Barrier restriction functions
 static double G3(double x, double y) {
+	return pow(0.5 * (g(x, y) + fabs(g(x, y))), minimization.alpha);
+}
+
+// Barrier restriction functions
+static double G4(double x, double y) {
 	return g(x, y) <= 0 ? -1 / g(x, y) : INFINITY;
 }
 
-static double G4(double x, double y) {
-	return g(x, y) <= 0 ? -log(-g(x, y)) : INFINITY;
-}
-
 static double G5(double x, double y) {
-	return pow(0.5 * (g(x, y) + fabs(g(x, y))), minimization.alpha);
+	return g(x, y) <= 0 ? -log(-g(x, y)) : INFINITY;
 }
 
 // Minimized function
@@ -123,8 +123,8 @@ static void researchBarrierFuncAlpha(FILE* fp, const double x0[APPROACH_SIZE], d
 
 	writeTableHeader(fp, val);
 	for (uint8_t i = 0; i != n_alpha; ++i) {
-		RMResult result = restrictionRosenbrock(G5, 100000, 0.5, 2 * (i + 1), x0, eps);
-		writeTableIter(stdout, result.iters_count, result.calcs_count, x0, result.x, result.func_min, r, r_step, eps, 2 * (i + 1), val);
+		RMResult result = restrictionRosenbrock(G3, 100000, 0.5, 2 * (i + 1), x0, eps);
+		writeTableIter(fp, result.iters_count, result.calcs_count, x0, result.x, result.func_min, r, r_step, eps, 2 * (i + 1), val);
 	}
 }
 
@@ -194,51 +194,51 @@ int main(int argc, char* argv[]) {
 	eps0 = 1.0E-3;
 	eps1 = 1.0E-7;
 	eps_step = 1.0E-1;
-	researchEps(stdout, G3, x0, r, r_step, eps0, eps1, eps_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
+	researchEps(stdout, G4, x0, r, r_step, eps0, eps1, eps_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
 	puts("");
 
 	r = 100;
 	r_step = 0.5;
-	//double x0_pack[X0_PACK_SIZE][APPROACH_SIZE] = {{0, 1}, {0, 2}, {0, 3}, {1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}};
-	researchX0(stdout, G3, x0_pack, X0_PACK_SIZE, r, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
-	puts("");
-
-	r = 100;
-	double r_step_pack2[R_STEP_SIZE] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09};
-	researchRStep(stdout, G3, x0, r, r_step_pack2, R_STEP_SIZE, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R_STEP | PCC_EPS);
-	puts("");
-
-	r_step = 0.005;
-	//double r_pack[R_PACK_SIZE] = { 2, 4, 6, 8, 10, 12, 14, 16, 18 };
-	researchR(stdout, G3, x0, r_pack, R_PACK_SIZE, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R | PCC_EPS);
-	puts("--------------------------------------------------------------------------------------------------------------");
-
-	r = 2;
-	r_step = 4;
-	eps0 = 1.0E-3;
-	eps1 = 1.0E-7;
-	eps_step = 1.0E-1;
-	researchEps(stdout, G4, x0, r, r_step, eps0, eps1, eps_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
-	puts("");
-
-	r = 3;
-	r_step = 10;
 	//double x0_pack[X0_PACK_SIZE][APPROACH_SIZE] = {{0, 1}, {0, 2}, {0, 3}, {1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}};
 	researchX0(stdout, G4, x0_pack, X0_PACK_SIZE, r, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
 	puts("");
 
-	r = 3;
-	//double r_step_pack2[R_STEP_SIZE] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09};
+	r = 100;
+	double r_step_pack2[R_STEP_SIZE] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09};
 	researchRStep(stdout, G4, x0, r, r_step_pack2, R_STEP_SIZE, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R_STEP | PCC_EPS);
 	puts("");
 
-	r_step = 6;
+	r_step = 0.005;
 	//double r_pack[R_PACK_SIZE] = { 2, 4, 6, 8, 10, 12, 14, 16, 18 };
 	researchR(stdout, G4, x0, r_pack, R_PACK_SIZE, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R | PCC_EPS);
 	puts("--------------------------------------------------------------------------------------------------------------");
 
-	r = 10000;
+	r = 100;
 	r_step = 0.5;
+	eps0 = 1.0E-3;
+	eps1 = 1.0E-7;
+	eps_step = 1.0E-1;
+	researchEps(stdout, G5, x0, r, r_step, eps0, eps1, eps_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
+	puts("");
+
+	r = 100;
+	r_step = 0.5;
+	//double x0_pack[X0_PACK_SIZE][APPROACH_SIZE] = {{0, 1}, {0, 2}, {0, 3}, {1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}};
+	researchX0(stdout, G5, x0_pack, X0_PACK_SIZE, r, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_EPS);
+	puts("");
+
+	r = 100;
+	//double r_step_pack2[R_STEP_SIZE] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09};
+	researchRStep(stdout, G5, x0, r, r_step_pack2, R_STEP_SIZE, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R_STEP | PCC_EPS);
+	puts("");
+
+	r_step = 0.005;
+	//double r_pack[R_PACK_SIZE] = { 2, 4, 6, 8, 10, 12, 14, 16, 18 };
+	researchR(stdout, G5, x0, r_pack, R_PACK_SIZE, r_step, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_R | PCC_EPS);
+	puts("--------------------------------------------------------------------------------------------------------------");
+
+	r = 3;
+	r_step = 7;
 	uint8_t n_alpha = 7;
 	researchBarrierFuncAlpha(stdout, x0, r, r_step, n_alpha, PCC_ITER | PCC_CALC | PCC_X0 | PCC_X | PCC_F | PCC_ALPHA | PCC_EPS);
 	puts("");
