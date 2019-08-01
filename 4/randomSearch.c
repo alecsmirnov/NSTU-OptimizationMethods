@@ -77,7 +77,7 @@ RSResult algorithm2(double (*func)(double, double), Point a, Point b, uint32_t m
 			calcs += rosenbrock_res.calcs_count;
 
 			if (rosenbrock_res.func_min < func_min) {
-				point_min = (Point) { rosenbrock_res.x[0], rosenbrock_res.x[1] };
+				point_min = (Point){rosenbrock_res.x[0], rosenbrock_res.x[1]};
 				func_min = rosenbrock_res.func_min;
 
 				miss_search_count = 0;
