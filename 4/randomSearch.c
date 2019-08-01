@@ -2,19 +2,16 @@
 
 #include "rosenbrockMethod.h"
 
-#include <time.h>
-#include <math.h>
+#include <float.h>
 
 RSResult simpleRandomSearch(double (*func)(double, double), Point a, Point b, double P, double eps) {
-	srand((uint32_t)time(NULL));
-
 	double V = (b.x - a.x) * (b.y - a.y);
 	double V_eps = eps * eps;
 	double P_eps = V_eps / V;
 
 	uint32_t N = (uint32_t)round(log(1 - P) / log(1 - P_eps));
 
-	double func_min = INFINITY;
+	double func_min = DBL_MAX;
 	Point point_min = {0, 0};
 
 	uint32_t iter = 0;
@@ -35,9 +32,7 @@ RSResult simpleRandomSearch(double (*func)(double, double), Point a, Point b, do
 }
 
 RSResult algorithm1(double (*func)(double, double), Point a, Point b, uint32_t m, double eps) {
-	srand((uint32_t)time(NULL));
-
-	double func_min = INFINITY;
+	double func_min = DBL_MAX;
 	Point point_min = {0, 0};
 	
 	uint32_t iter = 0;
@@ -65,8 +60,6 @@ RSResult algorithm1(double (*func)(double, double), Point a, Point b, uint32_t m
 }
 
 RSResult algorithm2(double (*func)(double, double), Point a, Point b, uint32_t m, double eps) {
-	srand((uint32_t)time(NULL));
-	
 	Point point_min = {randInRange(a.x, b.x), randInRange(a.y, b.y)};
 	double func_min = func(point_min.x, point_min.y);
 
@@ -84,8 +77,8 @@ RSResult algorithm2(double (*func)(double, double), Point a, Point b, uint32_t m
 			calcs += rosenbrock_res.calcs_count;
 
 			if (rosenbrock_res.func_min < func_min) {
+				point_min = (Point) { rosenbrock_res.x[0], rosenbrock_res.x[1] };
 				func_min = rosenbrock_res.func_min;
-				point_min = (Point){rosenbrock_res.x[0], rosenbrock_res.x[1]};
 
 				miss_search_count = 0;
 			}
@@ -102,8 +95,6 @@ RSResult algorithm2(double (*func)(double, double), Point a, Point b, uint32_t m
 }
 
 RSResult algorithm3(double (*func)(double, double), Point a, Point b, uint32_t m, double eps) {
-	srand((uint32_t)time(NULL));
-
 	Point point_min = {randInRange(a.x, b.x), randInRange(a.y, b.y)};
 	double func_min = func(point_min.x, point_min.y);
 
@@ -143,9 +134,9 @@ RSResult algorithm3(double (*func)(double, double), Point a, Point b, uint32_t m
 				rosenbrock_res1.x[0] = rosenbrock_res2.x[0];
 				rosenbrock_res1.x[1] = rosenbrock_res2.x[1];
 				rosenbrock_res1.func_min = rosenbrock_res2.func_min;
-
-				func_min = rosenbrock_res1.func_min;
+				
 				point_min = (Point){rosenbrock_res1.x[0], rosenbrock_res1.x[1]};
+				func_min = rosenbrock_res1.func_min;
 
 				miss_search_count = 0;
 			}

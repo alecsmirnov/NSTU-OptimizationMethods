@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "randomSearch.h"
 
@@ -64,6 +65,8 @@ static void algorithmTable(alg_ptr alg, Point a, Point b, double eps, const char
 }
 
 int main(int argc, char* argv[]) {
+	srand((uint32_t)time(NULL));
+
 	Point a = {-10, -10};
 	Point b = { 10,  10};
 	double eps = 1E-3;
