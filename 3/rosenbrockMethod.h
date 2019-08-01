@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "plotter.h"
-
 #define APPROACH_SIZE 2
 
 typedef struct RMResult {
