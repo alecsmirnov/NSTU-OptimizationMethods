@@ -23,21 +23,22 @@ static double f(double x, double y) {
 }
 
 static void simpleRandomSearchTable(Point a, Point b, const char* filename) {
-	enum {EPS_PACK_SIZE = 2};
-	double eps_pack[EPS_PACK_SIZE] = {1E-1, 1E-2};
+	enum {EPS_PACK_SIZE = 3};
+	double eps_pack[EPS_PACK_SIZE] = {1E-1, 1E-2, 1E-3};
 
 	enum {P_PACK_SIZE = 9};
 	double P_pack[P_PACK_SIZE] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
 
 	FILE* fp = fopen(filename, "w");
 
-	fprintf(fp, "eps\tP\tx\tfx\n");
+	fprintf(fp, "eps\tP\tN\tx\tfx\n");
 	for (uint8_t i = 0; i != EPS_PACK_SIZE; ++i)
 		for (uint8_t j = 0; j != P_PACK_SIZE; ++j) {
 			RSResult result = simpleRandomSearch(f, a, b, P_pack[j], eps_pack[i]);
 
 			fprintf(fp, "%.e\t", eps_pack[i]);
 			fprintf(fp, "%."PRINT_ACCURACY"lf\t", P_pack[j]);
+			fprintf(fp, "%u\t", result.calcs_count);
 			fprintf(fp, "%."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf\t", result.point_min.x, result.point_min.y);
 			fprintf(fp, "%."PRINT_ACCURACY"lf\n", result.func_min);
 		}
