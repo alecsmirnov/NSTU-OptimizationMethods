@@ -19,7 +19,7 @@ static double f(double x, double y) {
 	for (uint8_t i = 0; i != CONST_COUNT; ++i)
 		result += C[i] / (1 + (x - a[i]) * (x - a[i]) + (y - b[i]) * (y - b[i]));
 
-	return result;
+	return -result;
 }
 
 static void simpleRandomSearchTable(Point a, Point b, const char* filename) {
@@ -40,7 +40,7 @@ static void simpleRandomSearchTable(Point a, Point b, const char* filename) {
 			fprintf(fp, "%."PRINT_ACCURACY"lf\t", P_pack[j]);
 			fprintf(fp, "%u\t", result.calcs_count);
 			fprintf(fp, "%."PRINT_ACCURACY"lf %."PRINT_ACCURACY"lf\t", result.point_min.x, result.point_min.y);
-			fprintf(fp, "%."PRINT_ACCURACY"lf\n", result.func_min);
+			fprintf(fp, "%."PRINT_ACCURACY"lf\n", -result.func_min);
 		}
 
 	fclose(fp);
@@ -59,7 +59,7 @@ static void algorithmTable(alg_ptr alg, Point a, Point b, double eps, const char
 		fprintf(fp, "%u\t", m_pack[i]);
 		fprintf(fp, "%u\t", result.calcs_count);
 		fprintf(fp, "%."PRINT_ACCURACY"e %."PRINT_ACCURACY"e\t", result.point_min.x, result.point_min.y);
-		fprintf(fp, "%."PRINT_ACCURACY"lf\n", result.func_min);
+		fprintf(fp, "%."PRINT_ACCURACY"lf\n", -result.func_min);
 	}
 
 	fclose(fp);
